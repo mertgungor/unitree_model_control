@@ -7,6 +7,7 @@ ModelNode::ModelNode()
   ros::NodeHandle nh;
   start_time = std::chrono::high_resolution_clock::now();
 
+  cmd_vel = geometry_msgs::Twist();
 
   torque_commands.resize(12);
 
@@ -61,7 +62,7 @@ ModelNode::ModelNode()
   a1_params.commands_scale   = torch::tensor({a1_params.lin_vel_scale, a1_params.lin_vel_scale, a1_params.ang_vel_scale});
 
                                               //hip, thigh, calf
-  a1_params.torque_limits    = torch::tensor({{20.0, 55.0, 55.0,   // front left
+  a1_params.torque_limits    = torch::tensor({{ 20.0, 55.0, 55.0,   // front left
                                                 20.0, 55.0, 55.0,   // front right
                                                 20.0, 55.0, 55.0,   // rear  left
                                                 20.0, 55.0, 55.0 }}); // rear  right
@@ -82,16 +83,23 @@ ModelNode::ModelNode()
   joint_state_subscriber_ = nh.subscribe<sensor_msgs::JointState>(
       "/a1_gazebo/joint_states", 10, &ModelNode::jointStatesCallback, this);
 
-  timer = nh.createTimer(ros::Duration(0.002), &ModelNode::runModel, this);
+  cmd_vel_subscriber_ = nh.subscribe<geometry_msgs::Twist>(
+      "/cmd_vel", 10, &ModelNode::cmdvelCallback, this);
+
+  timer = nh.createTimer(ros::Duration(0.001), &ModelNode::runModel, this);
 }
 
 void ModelNode::modelStatesCallback(const gazebo_msgs::ModelStates::ConstPtr& msg)
 {
 
-  vel = msg->twist[2];
+  vel  = msg->twist[2];
   pose = msg->pose[2];
 //   printf("vel x: %.3f, y: %.3f, z: %.3f\n", vel.linear.x, vel.linear.y, vel.linear.z);
 
+}
+
+void ModelNode::cmdvelCallback(const geometry_msgs::Twist::ConstPtr& msg){
+  cmd_vel = *msg;
 }
 
 void ModelNode::jointStatesCallback(const sensor_msgs::JointState::ConstPtr& msg)

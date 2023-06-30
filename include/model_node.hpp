@@ -4,6 +4,7 @@
 #include <ros/ros.h>
 #include <gazebo_msgs/ModelStates.h>
 #include <sensor_msgs/JointState.h>
+#include <geometry_msgs/Twist.h>
 #include "../lib/model.cpp"
 #include "unitree_legged_msgs/MotorCmd.h"
 
@@ -14,6 +15,7 @@ public:
   ModelNode();
   void modelStatesCallback(const gazebo_msgs::ModelStates::ConstPtr& msg);
   void jointStatesCallback(const sensor_msgs::JointState::ConstPtr& msg);
+  void cmdvelCallback(const geometry_msgs::Twist::ConstPtr& msg);
   void runModel(const ros::TimerEvent& event);
 
 private:
