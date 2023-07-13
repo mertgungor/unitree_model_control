@@ -6,6 +6,8 @@ set(EXTRA_LIBS -pthread libunitree_legged_sdk_amd64.so lcm)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${TORCH_CXX_FLAGS}")
 
 find_package(Torch REQUIRED)
+find_package(unitree_legged_sdk REQUIRED)
+
 
 find_package(catkin REQUIRED COMPONENTS
     controller_manager
@@ -27,20 +29,23 @@ catkin_package(
     unitree_legged_msgs 
 )
 
+
+message("-- CMAKE_SYSTEM_PROCESSOR: ${CMAKE_SYSTEM_PROCESSOR}")
+if("${CMAKE_SYSTEM_PROCESSOR}" MATCHES "x86_64.*")
+  set(ARCH amd64)
+else()
+  set(ARCH arm64)
+endif()
+
+set(EXTRA_LIBS -pthread ${unitree_legged_sdk_LIBRARIES})
+
 include_directories(
     include
-    ${Boost_INCLUDE_DIR}
     ${catkin_INCLUDE_DIRS}
-    ${GAZEBO_INCLUDE_DIRS}
-    ~/Downloads/unitree_legged_sdk/include
+    ${unitree_legged_sdk_INCLUDE_DIRS}
     ../unitree_controller/include
-)
 
-link_directories(
-    ${GAZEBO_LIBRARY_DIRS}
-    lib
-    ~/Downloads/unitree_legged_sdk/lib
-    )
+)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${GAZEBO_CXX_FLAGS}")
 

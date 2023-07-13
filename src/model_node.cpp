@@ -74,7 +74,7 @@ ModelNode::ModelNode()
                                                 -0.1000,  1.0000, -1.5000 }});   
 
 
-  model = Model("/home/mert/unitree_ros/src/unitree_model_control/models/policy_1.pt", a1_params);
+  model = Model("/home/sstrostm/unitree_ros/src/unitree_model_control/models/policy_1.pt", a1_params);
 
   // Create a subscriber object
   model_state_subscriber_ = nh.subscribe<gazebo_msgs::ModelStates>(
