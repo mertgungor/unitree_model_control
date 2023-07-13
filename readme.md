@@ -4,25 +4,46 @@ This package is used to control the Unitree A1 robot with a pre-trained AI model
 
 # Installation
 
-First install unitree ros package from [github](https://github.com/unitreerobotics/unitree_ros). Then inside of the src folder clone this package.
+To run the robot from the terminal teleop-twist-keyboard package is required.
 
 ```bash
+sudo apt install ros-noetic-teleop-twist-keyboard
+```
+
+Model depends on libtorch and it needs to be installed too.
+```bash
+cd ~/Downloads
+wget https://download.pytorch.org/libtorch/cpu/libtorch-cxx11-abi-shared-with-deps-2.0.1%2Bcpu.zip
+```
+Unzip the folder and inside bashrc add this command with the path of your libtorch installation. `export Torch_DIR=/path/to/your/torchlib`
+
+Install unitree ros package. 
+
+```bash
+git clone https://github.com/mertgungor/unitree_ros.git ~/unitree_ros/src --recurse-submodules
+```
+
+After cloning cd into the unitree_ros and install model control package.
+
+```bash
+cd ~/unitree_ros/src
 git clone https://github.com/mertgungor/unitree_model_control.git
 ```
 
-After cloning cd into the unitree_ros folder again and build the package.
-
+Build the workspace
 ```bash
+cd ~/unitree_ros
 catkin_make
 ```
 
-Finally change the `publish_rate` parameter to 5000 at `unitree_ros/src/robots/a1_description/config/robot_control.yaml`. The model needs high publish rate to run properly, otherwise you migh see shaky behavior.
+Finally inside `unitree_model_control/models` folder there is a file called policy_1.pt. Copy the path of this file and past at line 77 in model_node.cpp file inside `unitree_model_control/src` folder.
 
 # Usage
 
 First start the Gazebo simulation.
 
 ```bash
+cd ~/unitree_ros
 source devel/setup.bash
 roslaunch unitree_gazebo normal.launch rname:=a1
 ```
@@ -30,6 +51,7 @@ roslaunch unitree_gazebo normal.launch rname:=a1
 In a new therminal start the AI model.
 
 ```bash
+cd ~/unitree_ros
 source devel/setup.bash
 rosrun unitree_model_control model_run
 ```
