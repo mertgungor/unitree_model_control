@@ -14,6 +14,7 @@ Model depends on libtorch and it needs to be installed too.
 ```bash
 cd ~/Downloads
 wget https://download.pytorch.org/libtorch/cpu/libtorch-cxx11-abi-shared-with-deps-2.0.1%2Bcpu.zip
+unzip libtorch-cxx11-abi-shared-with-deps-2.0.1+cpu.zip -d ./
 ```
 Unzip the folder and inside bashrc add this command with the path of your libtorch installation. `export Torch_DIR=/path/to/your/torchlib`
 
@@ -36,7 +37,6 @@ cd ~/unitree_ros
 catkin_make
 ```
 
-Finally inside `unitree_model_control/models` folder there is a file called policy_1.pt. Copy the path of this file and past at line 77 in model_node.cpp file inside `unitree_model_control/src` folder.
 
 # Usage
 
