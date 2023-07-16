@@ -1,5 +1,5 @@
 #include "../include/model_node.hpp"
-
+#include <ros/package.h>
 
 ModelNode::ModelNode()
 {
@@ -73,8 +73,13 @@ ModelNode::ModelNode()
                                                  0.1000,  1.0000, -1.5000,    
                                                 -0.1000,  1.0000, -1.5000 }});   
 
+  std::string package_name = "unitree_model_control"; // Replace with your ROS package name
+  std::string relative_path = "models/policy_1.pt"; // Replace with the relative path to your folder
+  std::string folder_path = ros::package::getPath(package_name) + "/" + relative_path;
 
-  model = Model("/home/sstrostm/unitree_ros/src/unitree_model_control/models/policy_1.pt", a1_params);
+
+
+  model = Model(folder_path, a1_params);
 
   // Create a subscriber object
   model_state_subscriber_ = nh.subscribe<gazebo_msgs::ModelStates>(
